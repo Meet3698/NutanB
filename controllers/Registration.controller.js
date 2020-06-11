@@ -5,9 +5,7 @@ const User = mongoose.model('UserSchema')
 
 router.post('/', async (req, res) => {
     const user = new User(req.body)
-    console.log(user);
-    
-    await  user.save((err) => {
+    await user.save((err,data) => {
         if (err) {
             if (err.keyPattern.email == 1) {
                 res.send("Email")
