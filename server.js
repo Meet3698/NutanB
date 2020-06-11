@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const port = process.env.PORT || 4000
 
-const RegistrationController = require('./controllers/Registration.controller')
+const UserController = require('./controllers/user.controller')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
@@ -18,7 +18,7 @@ app.use((req, res, next)=> {
     next();
 });
 
-app.use('/register',RegistrationController)
+app.use('/user',UserController)
 // app.use('/user',UserController)
 
 app.listen(port,()=>{
