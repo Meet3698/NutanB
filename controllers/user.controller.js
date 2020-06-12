@@ -25,7 +25,7 @@ router.post('/register', (req, res) => {
                 }
             }
             else {
-                res.send("Success")
+                res.sendStatus(200)
             }
         })
     })
@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
             })
         }
         else {
-            res.send("fail")
+            res.sendStatus(500)
         }
     });
 })
