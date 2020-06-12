@@ -5,3 +5,5 @@ mongoose.connect("mongodb+srv://meet:Meet@3698@anonymous-edqd9.mongodb.net/Nutan
 })
 
 require('./User.model')
+require('./product.model')
+require('./size.model')
