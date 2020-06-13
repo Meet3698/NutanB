@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router()
 const Product = mongoose.model('ProductSchema')
+const Size = mongoose.model('ProductSizeSchema')
 
 router.get('/newarrival',async(req,res)=>{
     const products = await Product.collection.find({productCategory: "New Arrival"}).toArray()
@@ -23,4 +24,13 @@ router.post('/productdetail',async(req,res)=>{
     }
 })
 
+router.post('/getsize',async(req,res)=>{
+    const size = await Size.collection.find({productName: req.body.productName}).toArray()
+    if(size.length === 0){
+        res.sendStatus(404)
+    }
+    else{
+        res.send(size)
+    }
+})
 module.exports = router
