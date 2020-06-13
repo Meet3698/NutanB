@@ -17,7 +17,8 @@ const ProductSchema = new mongoose.Schema({
         type : Number
     },
     productColor : {
-        type : String
+        type : String,
+        value : [String]
     },
     productLength : {
         type : Number
