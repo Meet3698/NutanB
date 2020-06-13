@@ -60,4 +60,14 @@ router.post('/deletecard',async (req,res)=>{
     const discard = await Order.collection.deleteOne({id : req.body.id})
     res.sendStatus(200)
 })
+
+router.post('/getcount',async(req,res)=>{
+    const count = await Order.collection.find({email:req.body.email}).toArray()
+    
+    if(count.length === 0){
+        res.json({message : "empty"})
+    }else{
+        res.json({message : count.length})
+    }
+})
 module.exports = router
