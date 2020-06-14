@@ -96,4 +96,14 @@ router.post('/updatecart',async(req,res)=>{
     res.sendStatus(200)
 })
 
+router.post('/getorders',async (req,res)=>{
+    const orders = await Order.collection.find({email : req.body.email}).toArray()
+
+    if(orders.length === 0){
+        res.sendStatus(404)
+    }else{
+        res.send(orders)
+    }
+})
+
 module.exports = router
