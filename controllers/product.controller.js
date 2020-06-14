@@ -36,38 +36,64 @@ router.post('/getsize', async (req, res) => {
 })
 
 router.post('/addorder', async (req, res) => {
-    const order = new Order(req.body)
-    await order.save(err => {
-        if (err) {
-            res.sendStatus(500)
-        } else {
-            res.sendStatus(200)
-        }
-    })
+    const prevOrder = await Order.collection.find({ $and: [{ email : req.body.email},{productName: req.body.productName }, { productSize: req.body.productSize },{orderStatus : "Cart"}] }).toArray()
+        
+    if (prevOrder.length === 0) {
+
+        req.body.productPrice = req.body.productQuantity*req.body.productPrice
+
+        const order = new Order(req.body)
+        await order.save(err => {
+            if (err) {
+                res.sendStatus(500)
+            } else {
+                res.sendStatus(200)
+            }
+        })
+    }
+    else{
+        const quantity = prevOrder[0].productQuantity + req.body.productQuantity
+        const price = req.body.productPrice * quantity
+        Order.collection.updateOne(
+            {$and : [{email : req.body.email},{productName : req.body.productName},{productSize:req.body.productSize}]},
+            {$set :{productQuantity : quantity,productPrice : price }}
+        )
+        res.sendStatus(200)
+    }
 })
 
-router.post('/getcart',async (req, res) => {
+router.post('/getcart', async (req, res) => {
     const cart = await Order.collection.find({ $and: [{ email: req.body.email }, { orderStatus: "Cart" }] }).toArray()
     if (cart.length === 0) {
-        res.json({message : "empty"})
+        res.json({ message: "empty" })
     }
     else {
         res.send(cart)
     }
 })
 
-router.post('/deletecard',async (req,res)=>{
-    const discard = await Order.collection.deleteOne({id : req.body.id})
+router.post('/deletecard', async (req, res) => {
+    const discard = await Order.collection.deleteOne({ id: req.body.id })
     res.sendStatus(200)
 })
 
-router.post('/getcount',async(req,res)=>{
-    const count = await Order.collection.find({email:req.body.email}).toArray()
-    
-    if(count.length === 0){
-        res.json({message : "empty"})
-    }else{
-        res.json({message : count.length})
+router.post('/getcount', async (req, res) => {
+    const count = await Order.collection.find({$and :[{ email: req.body.email},{orderStatus : "Cart"}]}).toArray()
+
+    if (count.length === 0) {
+        res.json({ message: "empty" })
+    } else {
+        res.json({ message: count.length })
     }
 })
+
+router.post('/updatecart',async(req,res)=>{
+    await Order.collection.updateMany(
+        {$and : [{email : req.body.email}, {orderStatus : "Cart"}]},
+        {$set : {orderStatus : "Accepted"}}
+    )
+
+    res.sendStatus(200)
+})
+
 module.exports = router
