@@ -4,7 +4,7 @@ mongoose.connect("mongodb+srv://meet:Meet@3698@anonymous-edqd9.mongodb.net/Nutan
     else console.log(err);
 })
 
-require('./user.model')
+require('./User.model')
 require('./product.model')
 require('./size.model')
 require('./order.model')
