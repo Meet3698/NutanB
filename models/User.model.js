@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     },
     password : {
         type : String
-    
+    }
 })
 
 mongoose.model('UserSchema',UserSchema)
