@@ -106,4 +106,13 @@ router.post('/getorders',async (req,res)=>{
     }
 })
 
+router.get('/filter',async(req,res)=>{
+    const c = req.body.productType
+    const s = req.body.productSize
+    const p = req.body.productPriceGroup
+    // const filter = await Product.collection.find({productType : {$in : c}}).toArray()
+    // const filter = await Product.collection.find({$and:[{productType : {$in : c}},{productSize : {$in : s}},{productPriceGroup : {$in : p}}]}).toArray()
+    const filter = await Product.collection.find({$and:[{productType : {$in : c}},{$cond: { if: { $ne: [ c.length, 0 ] }, then: { productSize : {$in : s}}, else: {} }},{productPriceGroup : {$in : p}}]}).toArray()
+    res.send(filter)
+})
 module.exports = router
