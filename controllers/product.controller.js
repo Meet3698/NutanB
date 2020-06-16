@@ -4,7 +4,7 @@ const router = express.Router()
 const Product = mongoose.model('ProductSchema')
 const Size = mongoose.model('ProductSizeSchema')
 const Order = mongoose.model('OrderSchema')
-
+const Users = mongoose.model('UserSchema')
 router.get('/newarrival', async (req, res) => {
     const products = await Product.collection.find({ productCategory: "New Arrival" }).toArray()
     if (products.length === 0) {
@@ -115,4 +115,60 @@ router.post('/filter',async(req,res)=>{
     // const filter = await Product.collection.find({productSize : {$cond : {if : {$ne : [s.length,0]},then : {$in : s}}}}).toArray()
     res.send(filter)
 })
+
+router.post('/getallorders', async (req, res) => {
+    const orders = await Order.collection.find({orderStatus : {$ne: "Cart"}}).toArray()
+    if (orders.length === 0) {
+        res.sendStatus(404)
+    }
+    else {
+        res.send(orders)
+    }
+})
+
+router.post('/addproduct', async(req, res) => {
+        const product = new Product({
+           productName: req.body.productName, 
+            productDescription: req.body.productDescription,
+            productPrice: req.body.productPrice,
+            productSize: req.body.productSize,
+            productStock: req.body.productStock,
+            productColor: req.body.productColor,
+            productLength: req.body.productLength,
+            productCare: req.body.productCare,
+            productComposition: req.body.productComposition,
+            productStyleNo: req.body.productStyleNo,
+            productCategory: req.body.productCategory,
+            productType: req.body.productType
+        })
+        console.log(product)
+
+        await product.save((err) => {
+            if (err) {
+                res.sendStatus(err)
+            }
+            else {
+                res.sendStatus(200)
+            }
+        })
+    })
+
+    router.post('/getstatistics', async(req, res) => {
+        const users = await Users.collection.find().toArray()
+        const products = await Product.collection.find().toArray()
+        const obj = {
+            "users" : users.length,
+            "products" : products.length
+        }
+        res.send(obj)
+    })
+
+    router.post('/changestatus', async(req,res) => {
+        console.log(req.body.id)
+        await Order.collection.updateOne(
+            {_id : mongoose.Types.ObjectId(req.body.id)},
+            {$set :{orderStatus : req.body.value}}
+        )
+        res.sendStatus(200)
+    })
 module.exports = router
