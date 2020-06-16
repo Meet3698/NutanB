@@ -73,6 +73,8 @@ router.post('/getcart', async (req, res) => {
 })
 
 router.post('/deletecard', async (req, res) => {
+    console.log(req.body.id);
+    
     const discard = await Order.collection.deleteOne({ _id: req.body.id })
     res.sendStatus(200)
 })
